@@ -1,0 +1,103 @@
+const int pinRojo = 2;
+const int pinAmarillo = 3;
+const int pinVerde = 4;
+
+void setup() {
+   // Configuramos los pines como salidas
+  pinMode(pinRojo, OUTPUT);
+  pinMode(pinAmarillo, OUTPUT);
+  pinMode(pinVerde, OUTPUT);
+  
+  // Nos aseguramos de que todos los LEDs empiecen apagados
+  digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, LOW);
+
+//Secuencia inicia rojo
+  digitalWrite(pinRojo, HIGH);
+  delay(500); // Espera medio segundo
+  digitalWrite(pinAmarillo, HIGH);
+  delay(500); // Espera medio segundo
+  digitalWrite(pinVerde, HIGH);
+  delay(500); // Espera medio segundo
+  
+//Apaga seciencia
+  digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, LOW);
+  delay(1000);
+  
+digitalWrite(pinRojo, HIGH);
+  digitalWrite(pinAmarillo, HIGH);
+  digitalWrite(pinVerde, HIGH);
+  delay(1000);
+  digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, LOW);
+  delay(1000);
+  digitalWrite(pinRojo, HIGH);
+  digitalWrite(pinAmarillo, HIGH);
+  digitalWrite(pinVerde, HIGH);
+  delay(1000);
+  digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, LOW);
+  delay(1000);
+  digitalWrite(pinRojo, HIGH);
+  digitalWrite(pinAmarillo, HIGH);
+  digitalWrite(pinVerde, HIGH);
+  delay(1000);
+
+  digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, LOW);
+  delay(1000);
+
+  //Secuencia inversa
+   digitalWrite(pinVerde, HIGH);
+  delay(500); // Espera medio segundo
+   digitalWrite(pinAmarillo, HIGH);
+  delay(500); // Espera medio segundo
+  digitalWrite(pinRojo, HIGH);
+  delay(500); // Espera medio segundo
+
+  digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, LOW);
+  delay(1000);
+  
+}
+
+void loop() {
+  digitalWrite(pinRojo, HIGH);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, LOW);
+  delay(3000);
+ digitalWrite(pinRojo, HIGH);
+  digitalWrite(pinAmarillo, HIGH);
+  digitalWrite(pinVerde, LOW);
+  delay(500);
+  digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, HIGH);
+  delay(3000);
+
+
+  digitalWrite(pinVerde, LOW);
+  delay(300);
+  digitalWrite(pinVerde, HIGH);
+  delay(300);
+  digitalWrite(pinVerde, LOW);
+  delay(300);
+  digitalWrite(pinVerde, HIGH);
+  delay(300);
+  digitalWrite(pinVerde, LOW);
+  delay(300);
+  digitalWrite(pinVerde, HIGH);
+  delay(300);
+
+ digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, HIGH);
+  digitalWrite(pinVerde, LOW);
+  delay(700);
+}
