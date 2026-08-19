@@ -1,0 +1,148 @@
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define ANCHO 128
+#define ALTO 64
+#define OLED_RESET 4
+Adafruit_SSD1306 oled(ANCHO, ALTO, &Wire, OLED_RESET);
+
+// Pines de los LEDs (según tu código)
+const int pinRojo = 2;
+const int pinAmarillo = 3;
+const int pinVerde = 4;
+
+// Tiempos de cada fase (en segundos) - ¡Puedes cambiarlos aquí!
+const int TIEMPO_ROJO = 5;
+const int TIEMPO_ROJO_AMARILLO = 2;
+const int TIEMPO_VERDE = 5;
+const int TIEMPO_AMARILLO = 2;
+
+// Variables para el conteo regresivo sin usar delay()
+int tiempoRestante = 0;
+unsigned long tiempoAnterior = 0;
+
+// Estados del semáforo: 0=Rojo, 1=Rojo+Amarillo, 2=Verde, 3=Amarillo
+int estado = 0; 
+
+void setup() {
+  // 1. Inicializar pantalla OLED
+  Wire.begin();
+  oled.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  oled.clearDisplay();
+  oled.setTextColor(WHITE);
+  oled.setTextSize(2);
+  oled.setCursor(10, 24);
+  oled.print("INICIANDO...");
+  oled.display();
+
+  // 2. Configurar pines de LEDs como salidas
+  pinMode(pinRojo, OUTPUT);
+  pinMode(pinAmarillo, OUTPUT);
+  pinMode(pinVerde, OUTPUT);
+  
+  // 3. Secuencia de prueba inicial (como en tu código original, pero más limpia)
+  apagarTodos();
+  delay(500);
+  digitalWrite(pinRojo, HIGH);
+  digitalWrite(pinAmarillo, HIGH);
+  digitalWrite(pinVerde, HIGH);
+  delay(1000);
+  apagarTodos();
+  delay(500);
+
+  // 4. Iniciar el ciclo en estado ROJO
+  estado = 0;
+  tiempoRestante = TIEMPO_ROJO;
+  tiempoAnterior = millis();
+  
+  actualizarSemaforo();
+}
+
+void loop() {
+  // Comprobar si ha pasado 1 segundo (1000 milisegundos)
+  if (millis() - tiempoAnterior >= 1000) {
+    tiempoRestante--;          // Restar 1 segundo
+    tiempoAnterior = millis(); // Reiniciar el contador de referencia
+    
+    // Si el tiempo llega a 0, cambiar al siguiente estado
+    if (tiempoRestante < 0) {
+      estado++;                // Avanzar al siguiente estado
+      if (estado > 3) {        // Si pasa del estado 3, volver al 0
+        estado = 0;
+      }
+      
+      // Asignar el tiempo correspondiente al nuevo estado
+      if (estado == 0) tiempoRestante = TIEMPO_ROJO;
+      else if (estado == 1) tiempoRestante = TIEMPO_ROJO_AMARILLO;
+      else if (estado == 2) tiempoRestante = TIEMPO_VERDE;
+      else if (estado == 3) tiempoRestante = TIEMPO_AMARILLO;
+    }
+    
+    // Actualizar LEDs y pantalla
+    actualizarSemaforo();
+  }
+}
+
+// Función que controla los LEDs y dibuja en la pantalla
+void actualizarSemaforo() {
+  oled.clearDisplay();
+  oled.setTextColor(WHITE);
+  
+  // Apagar todos primero para evitar mezclas no deseadas
+  apagarTodos();
+
+  if (estado == 0) {
+    // ================= FASE 1: ROJO =================
+    digitalWrite(pinRojo, HIGH);
+    
+    oled.setTextSize(3);
+    oled.setCursor(28, 0);
+    oled.print("ROJO");
+    
+  } else if (estado == 1) {
+    // ================= FASE 2: ROJO + AMARILLO =================
+    digitalWrite(pinRojo, HIGH);
+    digitalWrite(pinAmarillo, HIGH);
+    
+    oled.setTextSize(2);
+    oled.setCursor(10, 0);
+    oled.print("PREPARATE");
+    
+  } else if (estado == 2) {
+    // ================= FASE 3: VERDE =================
+    digitalWrite(pinVerde, HIGH);
+    
+    oled.setTextSize(3);
+    oled.setCursor(20, 0);
+    oled.print("VERDE");
+    
+  } else if (estado == 3) {
+    // ================= FASE 4: AMARILLO =================
+    digitalWrite(pinAmarillo, HIGH);
+    
+    oled.setTextSize(2);
+    oled.setCursor(10, 0);
+    oled.print("PREPARATE");
+  }
+
+  // ================= DIBUJAR EL CONTEO REGRESIVO =================
+  oled.setTextSize(5); // Número muy grande
+  if (tiempoRestante < 10) {
+    oled.setCursor(44, 24); // Centrado para 1 dígito
+    oled.print(" ");        // Espacio para que no "salte" al cambiar de 10 a 9
+    oled.print(tiempoRestante);
+  } else {
+    oled.setCursor(32, 24); // Centrado para 2 dígitos
+    oled.print(tiempoRestante);
+  }
+  
+  oled.display(); // Mostrar todo en la pantalla
+}
+
+// Función auxiliar para apagar todos los LEDs
+void apagarTodos() {
+  digitalWrite(pinRojo, LOW);
+  digitalWrite(pinAmarillo, LOW);
+  digitalWrite(pinVerde, LOW);
+}
